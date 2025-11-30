@@ -162,72 +162,112 @@ function App() {
           <div className="grid-pattern"></div>
         </div>
         <div className="container">
-          <motion.div 
-            className="hero-content"
-            initial={{ y: 50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            <motion.h1 
-              className="hero-title"
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              Trade Without Pressure.<br />
-              <span className="gradient-text">Grow Without Limits.</span>
-            </motion.h1>
-            <motion.p 
-              className="hero-subtitle"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              At GoldStoneX, you get funding up to $100,000 — with unlimited trading time,
-              transparent rules, and payouts you can rely on.
-            </motion.p>
-            <motion.p 
-              className="hero-tagline"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              Trade at your pace. Earn at your potential.
-            </motion.p>
-            <motion.form 
-              className="email-form" 
-              onSubmit={(e) => handleSubmit(e, 'hero')}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 100 }}
-              whileHover={{ scale: 1.05, y: -10 }}
-            >
-              <div className="input-group">
-                <input
-                  type="email"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="email-input"
-                />
-                <button type="submit" className="cta-button">
-                  Get Early Access & Starter Guide
-                </button>
-              </div>
-            </motion.form>
-            <br />
+          <div className="hero-main-content">
             <motion.div 
-              className="early-access-badge"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.7 }}
+              className="hero-content"
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <span className="badge-icon">⚡</span>
-              <span>Limited Early Access Spots — Get Your Funded Account Starter Pack</span>
-            </motion.div>
+              <motion.h1 
+                className="hero-title"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                Trade Without Pressure.<br />
+                <span className="gradient-text">Grow Without Limits.</span>
+              </motion.h1>
+              <motion.p 
+                className="hero-subtitle"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+              >
+                At GoldStoneX, you get funding up to $100,000 — with unlimited trading time,
+                transparent rules, and payouts you can rely on.
+              </motion.p>
+                            {/* Subscribe Form Integrated in Hero */}
+                            <motion.div 
+                className="hero-form-container"
+                initial={{ y: 30, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 100 }}
+              >
+                <motion.div 
+                  className="form-header"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.7 }}
+                >
+                  <motion.h2 
+                    className="form-title"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                  >
+                    Get Your Funded Account Starter Pack
+                  </motion.h2>
+                  <motion.p 
+                    className="form-subtitle"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 0.9 }}
+                  >
+                    Limited Early Access Spots Available This Week
+                  </motion.p>
+                </motion.div>
+                
+                <motion.form 
+                  className="hero-email-form" 
+                  onSubmit={(e) => handleSubmit(e, 'hero')}
+                  initial={{ y: 30, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, delay: 1, type: "spring", stiffness: 100 }}
+                >
+                  <div className="hero-input-group">
+                    <div className="input-wrapper">
+                      <span className="email-icon-input">📧</span>
+                      <input
+                        type="email"
+                        placeholder="Enter your email address"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        className="hero-email-input"
+                      />
+                    </div>
+                    <motion.button 
+                      type="submit" 
+                      className="hero-cta-button"
+                      whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(211, 174, 55, 0.5)" }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <span>Get Early Access</span>
+                      <span className="button-arrow">→</span>
+                    </motion.button>
+                  </div>
+                  <motion.p 
+                    className="form-privacy"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.6, delay: 1.2 }}
+                  >
+                    🔒 We respect your privacy. Unsubscribe at any time.
+                  </motion.p>
+                </motion.form>
+              </motion.div>
+              <motion.p 
+                className="hero-tagline"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                Trade at your pace. Earn at your potential.
+              </motion.p>
 
-          </motion.div>
+            </motion.div>
+          </div>
 
           <motion.div 
             className="hero-visual"
