@@ -440,6 +440,10 @@ p, span, a, button,
   overflow-wrap: break-word;
 }
 
+.text-black{
+  color: #000000 !important;
+}
+
 .hero-title {
   font-size: 3.7rem;
   font-weight: 900;

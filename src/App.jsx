@@ -142,7 +142,9 @@ function App() {
             <a href="#how-it-works">How It Works</a>
             <a href="#features">Features</a>
             <a href="#testimonials">Testimonials</a>
-            <button className="nav-cta">START TRADING</button>
+            <a href='https://dashboard.goldstonex.com/login' target='_blank' className="nav-cta">
+              <span className="text-black">START TRADING</span>
+            </a>
           </div>
         </div>
       </motion.nav>
