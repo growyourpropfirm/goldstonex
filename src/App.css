@@ -246,10 +246,10 @@ p, span, a, button,
 /* Hero Section */
 .hero {
   position: relative;
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   align-items: center;
-  padding: 100px 0 100px;
+  padding: 90px 0 90px;
   background: rgba(0, 0, 0, 0.15);
   backdrop-filter: blur(1px);
   color: var(--white);
@@ -441,10 +441,10 @@ p, span, a, button,
 }
 
 .hero-title {
-  font-size: 4rem;
+  font-size: 3.7rem;
   font-weight: 900;
   line-height: 1.1;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
   letter-spacing: 0.03em;
   color: var(--white);
 }

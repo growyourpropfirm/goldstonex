@@ -197,7 +197,8 @@ function App() {
               onSubmit={(e) => handleSubmit(e, 'hero')}
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
+              transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 100 }}
+              whileHover={{ scale: 1.05, y: -10 }}
             >
               <div className="input-group">
                 <input
