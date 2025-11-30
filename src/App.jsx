@@ -1,6 +1,5 @@
-import { useEffect, useState } from 'react'
-import AOS from 'aos'
-import 'aos/dist/aos.css'
+import { useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import './App.css'
 
 function App() {
@@ -8,15 +7,14 @@ function App() {
   const [footerEmail, setFooterEmail] = useState('')
   const [showSubscribePage, setShowSubscribePage] = useState(false)
   const [submittedEmail, setSubmittedEmail] = useState('')
+  const { scrollY } = useScroll()
+  
+  // Enhanced Parallax transform for background image - moves slower than scroll for parallax effect
+  const backgroundY = useTransform(scrollY, [0, 3000], [0, 800])
+  const backgroundOpacity = useTransform(scrollY, [0, 2000], [1, 0.2])
+  const backgroundScale = useTransform(scrollY, [0, 2500], [1, 1.3])
+  const backgroundBlur = useTransform(scrollY, [0, 1500], [0, 15])
 
-  useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      easing: 'ease-in-out',
-      once: true,
-      offset: 100
-    })
-  }, [])
 
   const handleSubmit = (e, type) => {
     e.preventDefault()
@@ -40,7 +38,12 @@ function App() {
     <div className="subscribe-page">
       <div className="subscribe-bg-effect"></div>
       <div className="container">
-        <div className="subscribe-content" data-aos="zoom-in">
+        <motion.div 
+          className="subscribe-content"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+        >
           <div className="success-icon-wrapper">
             <div className="success-icon">
               <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -88,7 +91,7 @@ function App() {
           >
             Back to Homepage
           </button>
-        </div>
+        </motion.div>
       </div>
     </div>
   )
@@ -98,10 +101,38 @@ function App() {
     return <SubscribePage />
   }
 
+  // Parallax Background Component
+  const ParallaxBackground = () => (
+    <motion.div
+      className="parallax-background"
+      style={{
+        y: backgroundY,
+        opacity: backgroundOpacity,
+        scale: backgroundScale
+      }}
+    >
+      <motion.div 
+        className="parallax-image"
+        style={{
+          filter: `blur(${backgroundBlur}px) brightness(0.7) contrast(1.1)`
+        }}
+      ></motion.div>
+      <div className="parallax-overlay"></div>
+    </motion.div>
+  )
+
   return (
     <div className="app">
+      {/* Parallax Background */}
+      <ParallaxBackground />
+      
       {/* Navigation */}
-      <nav className="navbar" data-aos="fade-down">
+      <motion.nav 
+        className="navbar" 
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
         <div className="container">
           <div className="nav-brand">
             {/* <span className="brand-text">GoldStoneX</span> */}
@@ -114,26 +145,60 @@ function App() {
             <button className="nav-cta">START TRADING</button>
           </div>
         </div>
-      </nav>
+      </motion.nav>
 
       {/* Hero Section */}
-      <section className="hero" id="hero">
+      <motion.section 
+        className="hero" 
+        id="hero"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
         <div className="hero-background">
           <div className="gradient-overlay"></div>
           <div className="grid-pattern"></div>
         </div>
         <div className="container">
-          <div className="hero-content" data-aos="fade-up">
-            <h1 className="hero-title">
+          <motion.div 
+            className="hero-content"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <motion.h1 
+              className="hero-title"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
               Trade Without Pressure.<br />
               <span className="gradient-text">Grow Without Limits.</span>
-            </h1>
-            <p className="hero-subtitle">
+            </motion.h1>
+            <motion.p 
+              className="hero-subtitle"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
               At GoldStoneX, you get funding up to $100,000 — with unlimited trading time,
               transparent rules, and payouts you can rely on.
-            </p>
-            <p className="hero-tagline">Trade at your pace. Earn at your potential.</p>
-            <form className="email-form" onSubmit={(e) => handleSubmit(e, 'hero')} data-aos="fade-up" data-aos-delay="300">
+            </motion.p>
+            <motion.p 
+              className="hero-tagline"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              Trade at your pace. Earn at your potential.
+            </motion.p>
+            <motion.form 
+              className="email-form" 
+              onSubmit={(e) => handleSubmit(e, 'hero')}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
               <div className="input-group">
                 <input
                   type="email"
@@ -147,17 +212,33 @@ function App() {
                   Get Early Access & Starter Guide
                 </button>
               </div>
-            </form>
+            </motion.form>
             <br />
-            <div className="early-access-badge" data-aos="fade-up" data-aos-delay="200">
+            <motion.div 
+              className="early-access-badge"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+            >
               <span className="badge-icon">⚡</span>
               <span>Limited Early Access Spots — Get Your Funded Account Starter Pack</span>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
 
-          <div className="hero-visual" data-aos="fade-left" data-aos-delay="400">
-            <div className="trading-card">
+          <motion.div 
+            className="hero-visual"
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            <motion.div 
+              className="trading-card"
+              initial={{ scale: 0.9, opacity: 0, rotateY: -10 }}
+              animate={{ scale: 1, opacity: 1, rotateY: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 100 }}
+              whileHover={{ scale: 1.05, y: -10 }}
+            >
               <div className="card-header">
                 <div className="card-dot"></div>
                 <div className="card-dot"></div>
@@ -171,57 +252,143 @@ function App() {
                   <span className="ticker-change positive">+0.24%</span>
                 </div>
                 <div className="chart-visual">
-                  <div className="chart-line"></div>
-                  <div className="chart-line"></div>
-                  <div className="chart-line"></div>
-                  <div className="chart-line"></div>
-                  <div className="chart-line"></div>
-                  <div className="chart-line"></div>
+                  <motion.div 
+                    className="chart-line"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "55%", opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
+                  ></motion.div>
+                  <motion.div 
+                    className="chart-line"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "60%", opacity: 1 }}
+                    transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
+                  ></motion.div>
+                  <motion.div 
+                    className="chart-line"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "75%", opacity: 1 }}
+                    transition={{ duration: 1, delay: 1, ease: "easeOut" }}
+                  ></motion.div>
+                  <motion.div 
+                    className="chart-line"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "85%", opacity: 1 }}
+                    transition={{ duration: 1, delay: 1.1, ease: "easeOut" }}
+                  ></motion.div>
+                  <motion.div 
+                    className="chart-line"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "92%", opacity: 1 }}
+                    transition={{ duration: 1, delay: 1.2, ease: "easeOut" }}
+                  ></motion.div>
+                  <motion.div 
+                    className="chart-line"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "100%", opacity: 1 }}
+                    transition={{ duration: 1, delay: 1.3, ease: "easeOut" }}
+                  ></motion.div>
                 </div>
                 <div className="stats-grid">
-                  <div className="stat-item">
+                  <motion.div 
+                    className="stat-item"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.4 }}
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <span className="stat-label">Account Size</span>
                     <span className="stat-value">$100,000</span>
-                  </div>
-                  <div className="stat-item">
+                  </motion.div>
+                  <motion.div 
+                    className="stat-item"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.5 }}
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <span className="stat-label">Profit Split</span>
                     <span className="stat-value">95%</span>
-                  </div>
-                  <div className="stat-item">
+                  </motion.div>
+                  <motion.div 
+                    className="stat-item"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.6 }}
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <span className="stat-label">Leverage</span>
                     <span className="stat-value">1:50</span>
-                  </div>
-                  <div className="stat-item">
+                  </motion.div>
+                  <motion.div 
+                    className="stat-item"
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 1.7 }}
+                    whileHover={{ scale: 1.05 }}
+                  >
                     <span className="stat-label">Payout</span>
                     <span className="stat-value">Bi-Weekly</span>
-                  </div>
+                  </motion.div>
                 </div>
               </div>
-            </div>
+            </motion.div>
             <div className="floating-badges">
-              <div className="badge-float" data-aos="fade-up" data-aos-delay="600">
+              <motion.div 
+                className="badge-float"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.8 }}
+                whileHover={{ scale: 1.1, y: -5 }}
+              >
                 <span className="badge-icon-small">💰</span>
                 <span>Up to $100k</span>
-              </div>
-              <div className="badge-float" data-aos="fade-up" data-aos-delay="700">
+              </motion.div>
+              <motion.div 
+                className="badge-float"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.9 }}
+                whileHover={{ scale: 1.1, y: -5 }}
+              >
                 <span className="badge-icon-small">⚡</span>
                 <span>Instant Access</span>
-              </div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* How It Works Section */}
-      <section className="how-it-works" id="how-it-works">
+      <motion.section 
+        className="how-it-works" 
+        id="how-it-works"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="gradient-overlay gradient-top-left"></div>
         <div className="container">
-          <h2 className="section-title" data-aos="fade-up">
+          <motion.h2 
+            className="section-title"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             How the Funding Evaluation Works
-          </h2>
+          </motion.h2>
 
           <div className="steps-container">
-            <div className="step-card" data-aos="fade-up" data-aos-delay="100">
+            <motion.div 
+              className="step-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
               <div className="step-number-badge">
                 <span className="step-number-text">1</span>
               </div>
@@ -230,9 +397,16 @@ function App() {
                 Sign up with your email to unlock your free evaluation starter guide,
                 pricing tiers, and early offers.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="step-card" data-aos="fade-up" data-aos-delay="200">
+            <motion.div 
+              className="step-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
               <div className="step-number-badge">
                 <span className="step-number-text">2</span>
               </div>
@@ -241,9 +415,16 @@ function App() {
                 Use the GoldStoneX demo environment with real market data to test your
                 consistency — under the same risk rules as real accounts.
               </p>
-            </div>
+            </motion.div>
 
-            <div className="step-card" data-aos="fade-up" data-aos-delay="300">
+            <motion.div 
+              className="step-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              whileHover={{ y: -10, scale: 1.02 }}
+            >
               <div className="step-number-badge">
                 <span className="step-number-text">3</span>
               </div>
@@ -252,71 +433,149 @@ function App() {
                 Complete the evaluation with discipline and get access to a funded account
                 with up to 95% profit split and bi-weekly payouts.
               </p>
-            </div>
+            </motion.div>
           </div>
 
-          <div className="disclaimer-box" data-aos="fade-up" data-aos-delay="400">
+          <motion.div 
+            className="disclaimer-box"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
             <span className="disclaimer-icon">💬</span>
             <p>All evaluations take place using simulated funds. No real capital traded during the evaluation.</p>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* No Pressure Section */}
-      <section className="no-pressure">
+      <motion.section 
+        className="no-pressure"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="section-bg-pattern"></div>
         <div className="gradient-overlay gradient-bottom-right"></div>
         <div className="container">
-          <h2 className="section-title" data-aos="fade-up">
+          <motion.h2 
+            className="section-title"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             Made a Mistake?<br />
             <span className="gradient-text">You Don't Lose Everything.</span>
-          </h2>
+          </motion.h2>
 
-          <p className="section-description">
-            We know real traders need time, discipline, and flexibility — not pressure.
-            <br />
-            That’s why GoldStoneX removes countdown timers, harsh restarts, and hidden trap
-          </p>
-
-          <div className="no-pressure-content">
-            <div className="highlight-box" data-aos="fade-up" data-aos-delay="100">
+          <motion.div 
+            className="no-pressure-content"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <motion.div 
+              className="highlight-box"
+              initial={{ scale: 0.95, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
               <span className="highlight-icon">❗</span>
               <p><strong>No rush. No restart. No hidden penalties.</strong></p>
               <p>Just transparent evaluation — built to assess skill, not luck.</p>
-            </div>
+            </motion.div>
 
-            <div className="features-list" data-aos="fade-up" data-aos-delay="200">
-              <div className="feature-item">
+            <motion.div 
+              className="features-list"
+              initial={{ y: 20, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <motion.div 
+                className="feature-item"
+                initial={{ x: -20, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.4 }}
+                whileHover={{ x: 10 }}
+              >
                 <span className="check-icon">✔</span>
                 <span>Unlimited Trading Period</span>
-              </div>
-              <div className="feature-item">
+              </motion.div>
+              <motion.div 
+                className="feature-item"
+                initial={{ x: -20, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.5 }}
+                whileHover={{ x: 10 }}
+              >
                 <span className="check-icon">✔</span>
                 <span>No strict daily deadlines</span>
-              </div>
-              <div className="feature-item">
+              </motion.div>
+              <motion.div 
+                className="feature-item"
+                initial={{ x: -20, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.6 }}
+                whileHover={{ x: 10 }}
+              >
                 <span className="check-icon">✔</span>
                 <span>Fair loss limits — 10% max, 5% daily</span>
-              </div>
-              <div className="feature-item">
+              </motion.div>
+              <motion.div 
+                className="feature-item"
+                initial={{ x: -20, opacity: 0 }}
+                whileInView={{ x: 0, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.7 }}
+                whileHover={{ x: 10 }}
+              >
                 <span className="check-icon">✔</span>
                 <span>Trade at your pace, not against the clock</span>
-              </div>
-            </div>
-          </div>
+              </motion.div>
+            </motion.div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Testimonials Section */}
-      <section className="testimonials" id="testimonials">
+      <motion.section 
+        className="testimonials" 
+        id="testimonials"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="gradient-overlay gradient-bottom-left"></div>
         <div className="container">
-          <h2 className="section-title" data-aos="fade-up">
+          <motion.h2 
+            className="section-title"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             Trusted by Traders Worldwide
-          </h2>
+          </motion.h2>
 
           <div className="testimonials-grid">
-            <div className="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+            <motion.div 
+              className="testimonial-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+            >
               <div className="quote-icon">"</div>
               <p className="testimonial-text">
                 Finally, a prop firm that actually gives traders time to grow. No rush, no trick rules.
@@ -328,9 +587,16 @@ function App() {
                   <span className="author-role">Futures Trader</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+            <motion.div 
+              className="testimonial-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+            >
               <div className="quote-icon">"</div>
               <p className="testimonial-text">
                 I passed without stress because there was no countdown. That changes everything.
@@ -342,9 +608,16 @@ function App() {
                   <span className="author-role">Forex Trader</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+            <motion.div 
+              className="testimonial-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              whileHover={{ y: -8, scale: 1.02 }}
+            >
               <div className="quote-icon">"</div>
               <p className="testimonial-text">
                 Bi-weekly payouts with 90% split made it feel like a real income stream.
@@ -356,16 +629,29 @@ function App() {
                   <span className="author-role">Funded Trader</span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Features Section */}
-      <section className="features" id="features">
+      <motion.section 
+        className="features" 
+        id="features"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="gradient-overlay gradient-top-right"></div>
         <div className="container">
-          <div className="features-header" data-aos="fade-up">
+          <motion.div 
+            className="features-header"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             <h2 className="section-title">
               Designed for Serious Traders,<br />
               <span className="gradient-text">Not Risk-Takers</span>
@@ -373,122 +659,270 @@ function App() {
             <p className="section-description">
               Discipline should be rewarded — not restricted.
             </p>
-          </div>
+          </motion.div>
 
           <div className="features-grid">
-            <div className="feature-card" data-aos="fade-up" data-aos-delay="100">
+            <motion.div 
+              className="feature-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ y: -12, scale: 1.03 }}
+            >
               <div className="feature-icon">🔒</div>
               <h3 className="feature-title">No Hidden Rules</h3>
               <p className="feature-description">No sudden resets</p>
-            </div>
+            </motion.div>
 
-            <div className="feature-card" data-aos="fade-up" data-aos-delay="200">
+            <motion.div 
+              className="feature-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ y: -12, scale: 1.03 }}
+            >
               <div className="feature-icon">💰</div>
               <h3 className="feature-title">Bi-weekly Payouts</h3>
               <p className="feature-description">Receive profits every 2 weeks</p>
-            </div>
+            </motion.div>
 
-            <div className="feature-card" data-aos="fade-up" data-aos-delay="300">
+            <motion.div 
+              className="feature-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              whileHover={{ y: -12, scale: 1.03 }}
+            >
               <div className="feature-icon">📊</div>
               <h3 className="feature-title">Transparent Risk Rules</h3>
               <p className="feature-description">10% max loss / 5% daily</p>
-            </div>
+            </motion.div>
 
-            <div className="feature-card" data-aos="fade-up" data-aos-delay="400">
+            <motion.div 
+              className="feature-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              whileHover={{ y: -12, scale: 1.03 }}
+            >
               <div className="feature-icon">🎯</div>
               <h3 className="feature-title">Trade Your Strategy</h3>
               <p className="feature-description">Trade under real execution</p>
-            </div>
+            </motion.div>
 
-            <div className="feature-card" data-aos="fade-up" data-aos-delay="500">
+            <motion.div 
+              className="feature-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              whileHover={{ y: -12, scale: 1.03 }}
+            >
               <div className="feature-icon">🔄</div>
               <h3 className="feature-title">No Restart Penalty</h3>
               <p className="feature-description">Earn as you grow</p>
-            </div>
+            </motion.div>
 
-            <div className="feature-card" data-aos="fade-up" data-aos-delay="600">
+            <motion.div 
+              className="feature-card"
+              initial={{ y: 50, opacity: 0 }}
+              whileInView={{ y: 0, opacity: 1 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              whileHover={{ y: -12, scale: 1.03 }}
+            >
               <div className="feature-icon">📈</div>
               <h3 className="feature-title">Freedom to Scale</h3>
               <p className="feature-description">No complex conditions</p>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Perfect For Section */}
-      <section className="perfect-for">
+      <motion.section 
+        className="perfect-for"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="gradient-overlay gradient-center-left"></div>
         <div className="container">
-          <h2 className="section-title" data-aos="fade-up">
+          <motion.h2 
+            className="section-title"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             Perfect for Traders Who
-          </h2>
+          </motion.h2>
 
           <div className="perfect-for-grid">
-            <div className="perfect-for-item" data-aos="fade-up" data-aos-delay="100">
+            <motion.div 
+              className="perfect-for-item"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <span className="check-icon-large">✔</span>
               <p>Have traded demo or live accounts and want real funding</p>
-            </div>
-            <div className="perfect-for-item" data-aos="fade-up" data-aos-delay="200">
+            </motion.div>
+            <motion.div 
+              className="perfect-for-item"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <span className="check-icon-large">✔</span>
               <p>Prefer trading without strict time pressure or countdown clocks</p>
-            </div>
-            <div className="perfect-for-item" data-aos="fade-up" data-aos-delay="300">
+            </motion.div>
+            <motion.div 
+              className="perfect-for-item"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <span className="check-icon-large">✔</span>
               <p>Want payouts every two weeks, not every 30–45 days</p>
-            </div>
-            <div className="perfect-for-item" data-aos="fade-up" data-aos-delay="400">
+            </motion.div>
+            <motion.div 
+              className="perfect-for-item"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <span className="check-icon-large">✔</span>
               <p>Want transparency, trust, and real scaling potential</p>
-            </div>
-            <div className="perfect-for-item" data-aos="fade-up" data-aos-delay="500">
+            </motion.div>
+            <motion.div 
+              className="perfect-for-item"
+              initial={{ x: -30, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.5 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <span className="check-icon-large">✔</span>
               <p>Want to trade with peace of mind — not anxiety</p>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* What Happens Next Section */}
-      <section className="what-next">
+      <motion.section 
+        className="what-next"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="gradient-overlay gradient-center"></div>
         <div className="container">
-          <h2 className="section-title" data-aos="fade-up">
+          <motion.h2 
+            className="section-title"
+            initial={{ y: 30, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
             What Happens Next
-          </h2>
+          </motion.h2>
 
           <div className="next-steps">
-            <div className="next-step" data-aos="fade-up" data-aos-delay="100">
+            <motion.div 
+              className="next-step"
+              initial={{ x: -50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <div className="step-number">Step 1</div>
               <p>Register for exclusive access</p>
-            </div>
-            <div className="step-arrow-icon" data-aos="fade-up" data-aos-delay="150">
+            </motion.div>
+            <motion.div 
+              className="step-arrow-icon"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.15 }}
+              whileHover={{ scale: 1.2, x: 5 }}
+            >
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 10L25 20L15 30" stroke="#D3AE37" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
-            <div className="next-step" data-aos="fade-up" data-aos-delay="200">
+            </motion.div>
+            <motion.div 
+              className="next-step"
+              initial={{ x: -50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <div className="step-number">Step 2</div>
               <p>Receive your funded strategy guide & offers</p>
-            </div>
-            <div className="step-arrow-icon" data-aos="fade-up" data-aos-delay="250">
+            </motion.div>
+            <motion.div 
+              className="step-arrow-icon"
+              initial={{ opacity: 0, scale: 0 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: 0.25 }}
+              whileHover={{ scale: 1.2, x: 5 }}
+            >
               <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 10L25 20L15 30" stroke="#D3AE37" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
-            </div>
-            <div className="next-step" data-aos="fade-up" data-aos-delay="300">
+            </motion.div>
+            <motion.div 
+              className="next-step"
+              initial={{ x: -50, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              whileHover={{ x: 10, scale: 1.02 }}
+            >
               <div className="step-number">Step 3</div>
               <p>Start your journey to a funded account</p>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Final CTA Section */}
-      <section className="final-cta">
+      <motion.section 
+        className="final-cta"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, amount: 0.3 }}
+        transition={{ duration: 0.6 }}
+      >
         <div className="gradient-overlay gradient-cta-top"></div>
         <div className="gradient-overlay gradient-cta-bottom"></div>
         <div className="container">
-          <div className="cta-content" data-aos="fade-up">
+          <motion.div 
+            className="cta-content"
+            initial={{ y: 50, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
             <h2 className="cta-title">
               Ready to Trade Without Pressure?
             </h2>
@@ -520,9 +954,9 @@ function App() {
               </div>
               <div className="stars">⭐⭐⭐⭐⭐</div>
             </div>
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className="footer">

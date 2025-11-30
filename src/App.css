@@ -9,6 +9,76 @@
   overflow-x: hidden;
   position: relative;
   background: var(--black);
+  min-height: 100vh;
+  z-index: 1;
+}
+
+.app > *:not(.parallax-background) {
+  position: relative;
+  z-index: 2;
+}
+
+section {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+/* Parallax Background */
+.parallax-background {
+  position: fixed;
+  top: -30%;
+  left: 0;
+  width: 100%;
+  height: 160%;
+  z-index: 0;
+  will-change: transform, opacity, scale;
+  transform-origin: center center;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.parallax-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/Hero-GoldStoneX.webp');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  will-change: transform;
+  transform-origin: center center;
+  filter: brightness(0.6) contrast(1.2);
+  animation: subtleMove 20s ease-in-out infinite;
+}
+
+@keyframes subtleMove {
+  0%, 100% {
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.05) translate(2%, -1%);
+  }
+}
+
+.parallax-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.4) 20%,
+    rgba(0, 0, 0, 0.65) 50%,
+    rgba(0, 0, 0, 0.75) 70%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 .app::before {
@@ -78,7 +148,7 @@ p, span, a, button,
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(0, 0, 0, 0.98);
+  background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(20px);
   z-index: 1000;
   padding: 1.25rem 0;
@@ -180,10 +250,11 @@ p, span, a, button,
   display: flex;
   align-items: center;
   padding: 100px 0 100px;
-  background: var(--black);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(1px);
   color: var(--white);
   overflow: hidden;
-  z-index: 1;
+  z-index: 2;
 }
 
 .hero::before {
@@ -829,7 +900,9 @@ section {
   padding: 60px 0;
   position: relative;
   overflow: hidden;
-  z-index: 1;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
 }
 
 .section-title {
@@ -858,10 +931,11 @@ section {
 
 /* How It Works */
 .how-it-works {
-  background: var(--black);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: 2;
   color: var(--white);
   position: relative;
-  z-index: 1;
 }
 
 .how-it-works::after {
@@ -1101,10 +1175,11 @@ section {
 
 /* No Pressure Section */
 .no-pressure {
-  background: var(--black);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: 2;
   color: var(--white);
   position: relative;
-  z-index: 1;
 }
 
 .no-pressure::after {
@@ -1237,10 +1312,11 @@ section {
 
 /* Testimonials */
 .testimonials {
-  background: var(--black);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: 2;
   color: var(--white);
   position: relative;
-  z-index: 1;
 }
 
 .testimonials::after {
@@ -1380,10 +1456,11 @@ section {
 
 /* Features */
 .features {
-  background: var(--black);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: 2;
   color: var(--white);
   position: relative;
-  z-index: 1;
 }
 
 .features::after {
@@ -1495,10 +1572,11 @@ section {
 
 /* Perfect For */
 .perfect-for {
-  background: var(--black);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: 2;
   color: var(--white);
   position: relative;
-  z-index: 1;
 }
 
 .perfect-for::after {
@@ -1580,10 +1658,11 @@ section {
 
 /* What Next */
 .what-next {
-  background: var(--black);
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(1px);
+  z-index: 2;
   color: var(--white);
   position: relative;
-  z-index: 1;
 }
 
 .what-next::after {
