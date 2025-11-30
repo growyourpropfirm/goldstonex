@@ -22,15 +22,15 @@ function App() {
     e.preventDefault()
     const emailValue = type === 'hero' ? email : footerEmail
     console.log('Email submitted:', emailValue)
-    
+
     // Store submitted email and show subscribe page
     setSubmittedEmail(emailValue)
     setShowSubscribePage(true)
-    
+
     // Reset form fields
     setEmail('')
     setFooterEmail('')
-    
+
     // Scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
@@ -44,24 +44,24 @@ function App() {
           <div className="success-icon-wrapper">
             <div className="success-icon">
               <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="40" cy="40" r="40" fill="url(#goldGradient)"/>
-                <path d="M25 40L35 50L55 30" stroke="#000" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round"/>
+                <circle cx="40" cy="40" r="40" fill="url(#goldGradient)" />
+                <path d="M25 40L35 50L55 30" stroke="#000" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
                 <defs>
                   <linearGradient id="goldGradient" x1="0" y1="0" x2="80" y2="80">
-                    <stop offset="0%" stopColor="#D3AE37"/>
-                    <stop offset="100%" stopColor="#F4E6AB"/>
+                    <stop offset="0%" stopColor="#D3AE37" />
+                    <stop offset="100%" stopColor="#F4E6AB" />
                   </linearGradient>
                 </defs>
               </svg>
             </div>
           </div>
-          
+
           <h1 className="subscribe-title">Success! You're In</h1>
           <p className="subscribe-subtitle">
             We've sent your early access details to<br />
             <strong className="email-highlight">{submittedEmail}</strong>
           </p>
-          
+
           <div className="subscribe-message">
             <div className="message-box">
               <h3>What's Next?</h3>
@@ -81,9 +81,9 @@ function App() {
               </ul>
             </div>
           </div>
-          
-          <button 
-            onClick={() => setShowSubscribePage(false)} 
+
+          <button
+            onClick={() => setShowSubscribePage(false)}
             className="back-button"
           >
             Back to Homepage
@@ -271,6 +271,12 @@ function App() {
             Made a Mistake?<br />
             <span className="gradient-text">You Don't Lose Everything.</span>
           </h2>
+
+          <p className="section-description">
+            We know real traders need time, discipline, and flexibility — not pressure.
+            <br />
+            That’s why GoldStoneX removes countdown timers, harsh restarts, and hidden trap
+          </p>
 
           <div className="no-pressure-content">
             <div className="highlight-box" data-aos="fade-up" data-aos-delay="100">
@@ -474,7 +480,7 @@ function App() {
               <p>Start your journey to a funded account</p>
             </div>
           </div>
-      </div>
+        </div>
       </section>
 
       {/* Final CTA Section */}
@@ -503,7 +509,7 @@ function App() {
                 />
                 <button type="submit" className="cta-button">
                   Unlock Early Access & Starter Pack
-        </button>
+                </button>
               </div>
             </form>
 
@@ -523,7 +529,7 @@ function App() {
         <div className="container">
           <div className="footer-content">
             <div className="footer-brand">
-            <img src="/GoldStoneX_Logo_yellow.svg" alt="GoldStoneX Logo" className="nav-logo" />
+              <img src="/GoldStoneX_Logo_yellow.svg" alt="GoldStoneX Logo" className="nav-logo" />
               <p>Trade Without Pressure. Grow Without Limits.</p>
             </div>
 
@@ -534,8 +540,8 @@ function App() {
                 No real capital is traded during evaluation. Participation does not involve real-money investment,
                 and past results are not indicative of future performance. GoldStoneX is not a broker, financial
                 advisor, or investment service provider.
-        </p>
-      </div>
+              </p>
+            </div>
           </div>
 
           <div className="footer-bottom">
