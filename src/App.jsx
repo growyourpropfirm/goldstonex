@@ -1,16 +1,15 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import './App.css'
 
 function App() {
+  const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [footerEmail, setFooterEmail] = useState('')
-  const [showSubscribePage, setShowSubscribePage] = useState(false)
-  const [submittedEmail, setSubmittedEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [subscriptionStatus, setSubscriptionStatus] = useState(null) // 'success', 'already_subscribed', or null
   const { scrollY } = useScroll()
-  
+
   // Enhanced Parallax transform for background image - moves slower than scroll for parallax effect
   const backgroundY = useTransform(scrollY, [0, 3000], [0, 800])
   const backgroundOpacity = useTransform(scrollY, [0, 2000], [1, 0.2])
@@ -21,9 +20,8 @@ function App() {
   const handleSubmit = async (e, type) => {
     e.preventDefault()
     const emailValue = type === 'hero' ? email : footerEmail
-    
+
     setIsLoading(true)
-    setSubscriptionStatus(null)
 
     try {
       // Get Brevo API key from environment variable
@@ -69,180 +67,68 @@ function App() {
 
       if (response.ok) {
         // Success - contact added
-        setSubscriptionStatus('success')
-        setSubmittedEmail(emailValue)
-        setShowSubscribePage(true)
-        
         // Reset form fields
         setEmail('')
         setFooterEmail('')
         
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        // Navigate to thank you page with success status
+        navigate('/thank-you', { 
+          state: { 
+            email: emailValue, 
+            status: 'success' 
+          } 
+        })
       } else {
         // Check if contact already exists
         // Brevo returns 400 with message like "Contact already exist" or code "duplicate_parameter"
         const errorMessage = data.message || data.error || ''
         const errorCode = data.code || ''
         const errorText = (errorMessage + ' ' + errorCode).toLowerCase()
-        
+
+        let status = 'already_subscribed'
         if (response.status === 400 && (
-          errorText.includes('already') || 
-          errorText.includes('exists') || 
+          errorText.includes('already') ||
+          errorText.includes('exists') ||
           errorText.includes('duplicate') ||
           errorCode === 'duplicate_parameter'
         )) {
-          setSubscriptionStatus('already_subscribed')
+          status = 'already_subscribed'
         } else {
           // Other errors - treat as already subscribed for user-friendly experience
           console.error('Brevo API error:', { status: response.status, data })
-          setSubscriptionStatus('already_subscribed')
+          status = 'already_subscribed'
         }
-        setSubmittedEmail(emailValue)
-        setShowSubscribePage(true)
         
         // Reset form fields
         setEmail('')
         setFooterEmail('')
         
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' })
+        // Navigate to thank you page with already subscribed status
+        navigate('/thank-you', { 
+          state: { 
+            email: emailValue, 
+            status: status 
+          } 
+        })
       }
     } catch (error) {
       console.error('Error subscribing:', error)
       // On network errors or other issues, treat as already subscribed for user-friendly experience
-      setSubscriptionStatus('already_subscribed')
-      setSubmittedEmail(emailValue)
-      setShowSubscribePage(true)
       
       // Reset form fields
       setEmail('')
       setFooterEmail('')
       
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Navigate to thank you page with already subscribed status
+      navigate('/thank-you', { 
+        state: { 
+          email: emailValue, 
+          status: 'already_subscribed' 
+        } 
+      })
     } finally {
       setIsLoading(false)
     }
-  }
-
-  // Subscribe Success/Failure Page Component
-  const SubscribePage = () => {
-    const isSuccess = subscriptionStatus === 'success'
-    const isAlreadySubscribed = subscriptionStatus === 'already_subscribed'
-
-    return (
-      <div className="subscribe-page">
-        <div className="subscribe-bg-effect"></div>
-        <div className="container">
-          <motion.div 
-            className="subscribe-content"
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-          >
-            {isSuccess ? (
-              <>
-                <div className="success-icon-wrapper">
-                  <div className="success-icon">
-                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="40" cy="40" r="40" fill="url(#goldGradient)" />
-                      <path d="M25 40L35 50L55 30" stroke="#000" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                      <defs>
-                        <linearGradient id="goldGradient" x1="0" y1="0" x2="80" y2="80">
-                          <stop offset="0%" stopColor="#D3AE37" />
-                          <stop offset="100%" stopColor="#F4E6AB" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                  </div>
-                </div>
-
-                <h1 className="subscribe-title">You're In! Check your inbox!</h1>
-                <p className="subscribe-subtitle">
-                  We've sent your early access details to<br />
-                  <strong className="email-highlight">{submittedEmail}</strong>
-                </p>
-
-                <div className="subscribe-message">
-                  <div className="message-box">
-                    <h3>What's Next?</h3>
-                    <ul className="next-steps-list">
-                      <li>
-                        <span className="list-icon">📧</span>
-                        <span>Check your email for the starter guide and pricing tiers</span>
-                      </li>
-                      <li>
-                        <span className="list-icon">🎯</span>
-                        <span>Review the evaluation rules and account options</span>
-                      </li>
-                      <li>
-                        <span className="list-icon">🚀</span>
-                        <span>Start your journey to a funded account</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </>
-            ) : isAlreadySubscribed ? (
-              <>
-                <div className="success-icon-wrapper">
-                  <div className="success-icon" style={{ background: 'rgba(211, 174, 55, 0.2)' }}>
-                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <circle cx="40" cy="40" r="40" fill="rgba(211, 174, 55, 0.2)" />
-                      <path d="M30 40L50 40" stroke="#D3AE37" strokeWidth="5" strokeLinecap="round" />
-                      <path d="M40 30L40 50" stroke="#D3AE37" strokeWidth="5" strokeLinecap="round" />
-                    </svg>
-                  </div>
-                </div>
-
-                <h1 className="subscribe-title">Already Subscribed</h1>
-                <p className="subscribe-subtitle">
-                  It seems you already subscribed with<br />
-                  <strong className="email-highlight">{submittedEmail}</strong>
-                </p>
-
-                <div className="subscribe-message">
-                  <div className="message-box">
-                    <h3>You're All Set!</h3>
-                    <ul className="next-steps-list">
-                      <li>
-                        <span className="list-icon">📧</span>
-                        <span>Check your email inbox for your early access details</span>
-                      </li>
-                      <li>
-                        <span className="list-icon">📂</span>
-                        <span>Don't forget to check your spam folder</span>
-                      </li>
-                      <li>
-                        <span className="list-icon">🚀</span>
-                        <span>You're ready to start your journey to a funded account</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </>
-            ) : null}
-
-            <button
-              onClick={() => {
-                setShowSubscribePage(false)
-                setSubscriptionStatus(null)
-                setSubmittedEmail('')
-              }}
-              className="back-button"
-            >
-              Back to Homepage
-            </button>
-          </motion.div>
-        </div>
-      </div>
-    )
-  }
-
-  // Show subscribe page if form was submitted
-  if (showSubscribePage) {
-    return <SubscribePage />
   }
 
   // Parallax Background Component
@@ -255,7 +141,7 @@ function App() {
         scale: backgroundScale
       }}
     >
-      <motion.div 
+      <motion.div
         className="parallax-image"
         style={{
           filter: `blur(${backgroundBlur}px) brightness(0.7) contrast(1.1)`
@@ -269,10 +155,10 @@ function App() {
     <div className="app">
       {/* Parallax Background */}
       <ParallaxBackground />
-      
+
       {/* Navigation */}
-      <motion.nav 
-        className="navbar" 
+      <motion.nav
+        className="navbar"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
@@ -294,8 +180,8 @@ function App() {
       </motion.nav>
 
       {/* Hero Section */}
-      <motion.section 
-        className="hero" 
+      <motion.section
+        className="hero"
         id="hero"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -307,13 +193,13 @@ function App() {
         </div>
         <div className="container">
           <div className="hero-main-content">
-            <motion.div 
+            <motion.div
               className="hero-content"
               initial={{ y: 50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <motion.h1 
+              <motion.h1
                 className="hero-title"
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -322,7 +208,7 @@ function App() {
                 Trade Without Pressure.<br />
                 <span className="gradient-text">Grow Without Limits.</span>
               </motion.h1>
-              <motion.p 
+              <motion.p
                 className="hero-subtitle"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -331,7 +217,7 @@ function App() {
                 At GoldStoneX, you get funding up to $100,000 — with unlimited trading time,
                 transparent rules, and payouts you can rely on.
               </motion.p>
-              <motion.p 
+              <motion.p
                 className="hero-tagline"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -343,86 +229,86 @@ function App() {
             </motion.div>
           </div>
 
-          <motion.div 
+          <motion.div
             className="hero-visual"
             initial={{ x: 50, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-                            {/* Subscribe Form Integrated in Hero */}
-                            <motion.div 
-                className="hero-form-container"
+            {/* Subscribe Form Integrated in Hero */}
+            <motion.div
+              className="hero-form-container"
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 100 }}
+            >
+              <motion.div
+                className="form-header"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+              >
+                <motion.h2
+                  className="form-title"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.8 }}
+                >
+                  Get Your Funded Account Starter Pack
+                </motion.h2>
+                <motion.p
+                  className="form-subtitle"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.6, delay: 0.9 }}
+                >
+                  Limited Early Access Spots Available This Week
+                </motion.p>
+              </motion.div>
+
+              <motion.form
+                className="hero-email-form"
+                onSubmit={(e) => handleSubmit(e, 'hero')}
                 initial={{ y: 30, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 100 }}
+                transition={{ duration: 0.8, delay: 1, type: "spring", stiffness: 100 }}
               >
-                <motion.div 
-                  className="form-header"
+                <div className="hero-input-group">
+                  <div className="input-wrapper">
+                    {/* <span className="email-icon-input">📧</span> */}
+                    <input
+                      type="email"
+                      placeholder="Enter your email address"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      className="hero-email-input"
+                    />
+                  </div>
+                  <motion.button
+                    type="submit"
+                    className="hero-cta-button"
+                    disabled={isLoading}
+                    whileHover={!isLoading ? { scale: 1.05, boxShadow: "0 10px 30px rgba(211, 174, 55, 0.5)" } : {}}
+                    whileTap={!isLoading ? { scale: 0.98 } : {}}
+                  >
+                    <span>{isLoading ? 'Processing...' : 'Get Access'}</span>
+                    {!isLoading && <span className="button-arrow">→</span>}
+                    {isLoading && <span className="button-arrow">⏳</span>}
+                  </motion.button>
+                </div>
+                <motion.p
+                  className="form-privacy"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ duration: 0.6, delay: 0.7 }}
+                  transition={{ duration: 0.6, delay: 1.2 }}
                 >
-                  <motion.h2 
-                    className="form-title"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.8 }}
-                  >
-                    Get Your Funded Account Starter Pack
-                  </motion.h2>
-                  <motion.p 
-                    className="form-subtitle"
-                    initial={{ y: 20, opacity: 0 }}
-                    animate={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 0.9 }}
-                  >
-                    Limited Early Access Spots Available This Week
-                  </motion.p>
-                </motion.div>
-                
-                <motion.form 
-                  className="hero-email-form" 
-                  onSubmit={(e) => handleSubmit(e, 'hero')}
-                  initial={{ y: 30, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 1, type: "spring", stiffness: 100 }}
-                >
-                  <div className="hero-input-group">
-                    <div className="input-wrapper">
-                      {/* <span className="email-icon-input">📧</span> */}
-                      <input
-                        type="email"
-                        placeholder="Enter your email address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                        className="hero-email-input"
-                      />
-                    </div>
-                    <motion.button 
-                      type="submit" 
-                      className="hero-cta-button"
-                      disabled={isLoading}
-                      whileHover={!isLoading ? { scale: 1.05, boxShadow: "0 10px 30px rgba(211, 174, 55, 0.5)" } : {}}
-                      whileTap={!isLoading ? { scale: 0.98 } : {}}
-                    >
-                      <span>{isLoading ? 'Subscribing...' : 'Get Early Access'}</span>
-                      {!isLoading && <span className="button-arrow">→</span>}
-                      {isLoading && <span className="button-arrow">⏳</span>}
-                    </motion.button>
-                  </div>
-                  <motion.p 
-                    className="form-privacy"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.6, delay: 1.2 }}
-                  >
-                    🔒 We respect your privacy. Unsubscribe at any time.
-                  </motion.p>
-                </motion.form>
-              </motion.div>
+                  🔒 We respect your privacy. Unsubscribe at any time.
+                </motion.p>
+              </motion.form>
+            </motion.div>
             <div className="floating-badges">
-              <motion.div 
+              <motion.div
                 className="badge-float"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -432,7 +318,7 @@ function App() {
                 <span className="badge-icon-small">💰</span>
                 <span>Up to $100k</span>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="badge-float"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
@@ -448,8 +334,8 @@ function App() {
       </motion.section>
 
       {/* How It Works Section */}
-      <motion.section 
-        className="how-it-works" 
+      <motion.section
+        className="how-it-works"
         id="how-it-works"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -458,7 +344,7 @@ function App() {
       >
         <div className="gradient-overlay gradient-top-left"></div>
         <div className="container">
-          <motion.h2 
+          <motion.h2
             className="section-title"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -469,7 +355,7 @@ function App() {
           </motion.h2>
 
           <div className="steps-container">
-            <motion.div 
+            <motion.div
               className="step-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -482,11 +368,11 @@ function App() {
               </div>
               <h3 className="step-title">Get Instant Access</h3>
               <p className="step-description">
-              Sign up with your email to unlock your early access, pricing tiers, and early offers.
+                Sign up with your email to unlock your early access, pricing tiers, and early offers.
               </p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="step-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -504,7 +390,7 @@ function App() {
               </p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="step-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -523,7 +409,7 @@ function App() {
             </motion.div>
           </div>
 
-          <motion.div 
+          <motion.div
             className="disclaimer-box"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -537,7 +423,7 @@ function App() {
       </motion.section>
 
       {/* No Pressure Section */}
-      <motion.section 
+      <motion.section
         className="no-pressure"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -547,7 +433,7 @@ function App() {
         <div className="section-bg-pattern"></div>
         <div className="gradient-overlay gradient-bottom-right"></div>
         <div className="container">
-          <motion.h2 
+          <motion.h2
             className="section-title"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -558,14 +444,14 @@ function App() {
             <span className="gradient-text">You Don't Lose Everything.</span>
           </motion.h2>
 
-          <motion.div 
+          <motion.div
             className="no-pressure-content"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <motion.div 
+            <motion.div
               className="highlight-box"
               initial={{ scale: 0.95, opacity: 0 }}
               whileInView={{ scale: 1, opacity: 1 }}
@@ -577,14 +463,14 @@ function App() {
               <p>Just transparent evaluation — built to assess skill, not luck.</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="features-list"
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <motion.div 
+              <motion.div
                 className="feature-item"
                 initial={{ x: -20, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
@@ -595,7 +481,7 @@ function App() {
                 <span className="check-icon">✔</span>
                 <span>Unlimited Trading Period</span>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="feature-item"
                 initial={{ x: -20, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
@@ -606,7 +492,7 @@ function App() {
                 <span className="check-icon">✔</span>
                 <span>No strict daily deadlines</span>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="feature-item"
                 initial={{ x: -20, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
@@ -617,7 +503,7 @@ function App() {
                 <span className="check-icon">✔</span>
                 <span>Fair loss limits — 10% max, 5% daily</span>
               </motion.div>
-              <motion.div 
+              <motion.div
                 className="feature-item"
                 initial={{ x: -20, opacity: 0 }}
                 whileInView={{ x: 0, opacity: 1 }}
@@ -722,8 +608,8 @@ function App() {
       </motion.section> */}
 
       {/* Features Section */}
-      <motion.section 
-        className="features" 
+      <motion.section
+        className="features"
         id="features"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -732,7 +618,7 @@ function App() {
       >
         <div className="gradient-overlay gradient-top-right"></div>
         <div className="container">
-          <motion.div 
+          <motion.div
             className="features-header"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -749,7 +635,7 @@ function App() {
           </motion.div>
 
           <div className="features-grid">
-            <motion.div 
+            <motion.div
               className="feature-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -762,7 +648,7 @@ function App() {
               <p className="feature-description">No sudden resets</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -775,7 +661,7 @@ function App() {
               <p className="feature-description">Receive profits every 2 weeks</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -788,7 +674,7 @@ function App() {
               <p className="feature-description">10% max loss / 5% daily</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -801,7 +687,7 @@ function App() {
               <p className="feature-description">Trade under real execution</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -814,7 +700,7 @@ function App() {
               <p className="feature-description">Earn as you grow</p>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="feature-card"
               initial={{ y: 50, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
@@ -831,7 +717,7 @@ function App() {
       </motion.section>
 
       {/* Perfect For Section */}
-      <motion.section 
+      <motion.section
         className="perfect-for"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -840,7 +726,7 @@ function App() {
       >
         <div className="gradient-overlay gradient-center-left"></div>
         <div className="container">
-          <motion.h2 
+          <motion.h2
             className="section-title"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -851,7 +737,7 @@ function App() {
           </motion.h2>
 
           <div className="perfect-for-grid">
-            <motion.div 
+            <motion.div
               className="perfect-for-item"
               initial={{ x: -30, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -862,7 +748,7 @@ function App() {
               <span className="check-icon-large">✔</span>
               <p>Have traded demo or live accounts and want real funding</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="perfect-for-item"
               initial={{ x: -30, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -873,7 +759,7 @@ function App() {
               <span className="check-icon-large">✔</span>
               <p>Prefer trading without strict time pressure or countdown clocks</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="perfect-for-item"
               initial={{ x: -30, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -884,7 +770,7 @@ function App() {
               <span className="check-icon-large">✔</span>
               <p>Want payouts every two weeks, not every 30–45 days</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="perfect-for-item"
               initial={{ x: -30, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -895,7 +781,7 @@ function App() {
               <span className="check-icon-large">✔</span>
               <p>Want transparency, trust, and real scaling potential</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="perfect-for-item"
               initial={{ x: -30, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -911,7 +797,7 @@ function App() {
       </motion.section>
 
       {/* What Happens Next Section */}
-      <motion.section 
+      <motion.section
         className="what-next"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -920,7 +806,7 @@ function App() {
       >
         <div className="gradient-overlay gradient-center"></div>
         <div className="container">
-          <motion.h2 
+          <motion.h2
             className="section-title"
             initial={{ y: 30, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
@@ -931,7 +817,7 @@ function App() {
           </motion.h2>
 
           <div className="next-steps">
-            <motion.div 
+            <motion.div
               className="next-step"
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -942,7 +828,7 @@ function App() {
               <div className="step-number">Step 1</div>
               <p>Register for exclusive access</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="step-arrow-icon"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -954,7 +840,7 @@ function App() {
                 <path d="M15 10L25 20L15 30" stroke="#D3AE37" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="next-step"
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -965,7 +851,7 @@ function App() {
               <div className="step-number">Step 2</div>
               <p>Get early access to our exclusive offers</p>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="step-arrow-icon"
               initial={{ opacity: 0, scale: 0 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -977,7 +863,7 @@ function App() {
                 <path d="M15 10L25 20L15 30" stroke="#D3AE37" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </motion.div>
-            <motion.div 
+            <motion.div
               className="next-step"
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
@@ -993,7 +879,7 @@ function App() {
       </motion.section>
 
       {/* Final CTA Section */}
-      <motion.section 
+      <motion.section
         className="final-cta"
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -1003,7 +889,7 @@ function App() {
         <div className="gradient-overlay gradient-cta-top"></div>
         <div className="gradient-overlay gradient-cta-bottom"></div>
         <div className="container">
-          <motion.div 
+          <motion.div
             className="cta-content"
             initial={{ y: 50, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
