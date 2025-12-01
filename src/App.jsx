@@ -187,6 +187,24 @@ function App() {
                 At GoldStoneX, you get funding up to $100,000 — with unlimited trading time,
                 transparent rules, and payouts you can rely on.
               </motion.p>
+              <motion.p 
+                className="hero-tagline"
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                Trade at your pace. Earn at your potential.
+              </motion.p>
+
+            </motion.div>
+          </div>
+
+          <motion.div 
+            className="hero-visual"
+            initial={{ x: 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
                             {/* Subscribe Form Integrated in Hero */}
                             <motion.div 
                 className="hero-form-container"
@@ -227,7 +245,7 @@ function App() {
                 >
                   <div className="hero-input-group">
                     <div className="input-wrapper">
-                      <span className="email-icon-input">📧</span>
+                      {/* <span className="email-icon-input">📧</span> */}
                       <input
                         type="email"
                         placeholder="Enter your email address"
@@ -257,125 +275,6 @@ function App() {
                   </motion.p>
                 </motion.form>
               </motion.div>
-              <motion.p 
-                className="hero-tagline"
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-              >
-                Trade at your pace. Earn at your potential.
-              </motion.p>
-
-            </motion.div>
-          </div>
-
-          <motion.div 
-            className="hero-visual"
-            initial={{ x: 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            <motion.div 
-              className="trading-card"
-              initial={{ scale: 0.9, opacity: 0, rotateY: -10 }}
-              animate={{ scale: 1, opacity: 1, rotateY: 0 }}
-              transition={{ duration: 0.8, delay: 0.6, type: "spring", stiffness: 100 }}
-              whileHover={{ scale: 1.05, y: -10 }}
-            >
-              <div className="card-header">
-                <div className="card-dot"></div>
-                <div className="card-dot"></div>
-                <div className="card-dot"></div>
-                <span className="card-title">Trading Dashboard</span>
-              </div>
-              <div className="card-content">
-                <div className="price-ticker">
-                  <span className="ticker-label">EUR/USD</span>
-                  <span className="ticker-price">1.0856</span>
-                  <span className="ticker-change positive">+0.24%</span>
-                </div>
-                <div className="chart-visual">
-                  <motion.div 
-                    className="chart-line"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "55%", opacity: 1 }}
-                    transition={{ duration: 1, delay: 0.8, ease: "easeOut" }}
-                  ></motion.div>
-                  <motion.div 
-                    className="chart-line"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "60%", opacity: 1 }}
-                    transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
-                  ></motion.div>
-                  <motion.div 
-                    className="chart-line"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "75%", opacity: 1 }}
-                    transition={{ duration: 1, delay: 1, ease: "easeOut" }}
-                  ></motion.div>
-                  <motion.div 
-                    className="chart-line"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "85%", opacity: 1 }}
-                    transition={{ duration: 1, delay: 1.1, ease: "easeOut" }}
-                  ></motion.div>
-                  <motion.div 
-                    className="chart-line"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "92%", opacity: 1 }}
-                    transition={{ duration: 1, delay: 1.2, ease: "easeOut" }}
-                  ></motion.div>
-                  <motion.div 
-                    className="chart-line"
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "100%", opacity: 1 }}
-                    transition={{ duration: 1, delay: 1.3, ease: "easeOut" }}
-                  ></motion.div>
-                </div>
-                <div className="stats-grid">
-                  <motion.div 
-                    className="stat-item"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 1.4 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <span className="stat-label">Account Size</span>
-                    <span className="stat-value">$100,000</span>
-                  </motion.div>
-                  <motion.div 
-                    className="stat-item"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 1.5 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <span className="stat-label">Profit Split</span>
-                    <span className="stat-value">95%</span>
-                  </motion.div>
-                  <motion.div 
-                    className="stat-item"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 1.6 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <span className="stat-label">Leverage</span>
-                    <span className="stat-value">1:50</span>
-                  </motion.div>
-                  <motion.div 
-                    className="stat-item"
-                    initial={{ scale: 0.8, opacity: 0 }}
-                    animate={{ scale: 1, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 1.7 }}
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <span className="stat-label">Payout</span>
-                    <span className="stat-value">Bi-Weekly</span>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
             <div className="floating-badges">
               <motion.div 
                 className="badge-float"
