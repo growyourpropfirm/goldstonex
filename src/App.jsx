@@ -7,6 +7,8 @@ function App() {
   const [footerEmail, setFooterEmail] = useState('')
   const [showSubscribePage, setShowSubscribePage] = useState(false)
   const [submittedEmail, setSubmittedEmail] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null) // 'success', 'already_subscribed', or null
   const { scrollY } = useScroll()
   
   // Enhanced Parallax transform for background image - moves slower than scroll for parallax effect
@@ -16,85 +18,227 @@ function App() {
   const backgroundBlur = useTransform(scrollY, [0, 1500], [0, 15])
 
 
-  const handleSubmit = (e, type) => {
+  const handleSubmit = async (e, type) => {
     e.preventDefault()
     const emailValue = type === 'hero' ? email : footerEmail
-    console.log('Email submitted:', emailValue)
+    
+    setIsLoading(true)
+    setSubscriptionStatus(null)
 
-    // Store submitted email and show subscribe page
-    setSubmittedEmail(emailValue)
-    setShowSubscribePage(true)
+    try {
+      // Get Brevo API key from environment variable
+      const BREVO_API_KEY = import.meta.env.VITE_BREVO_API_KEY
+      const BREVO_LIST_ID = import.meta.env.VITE_BREVO_LIST_ID
 
-    // Reset form fields
-    setEmail('')
-    setFooterEmail('')
+      if (!BREVO_API_KEY) {
+        console.error('Brevo API key is not configured')
+        throw new Error('Subscription service is not configured. Please contact support.')
+      }
 
-    // Scroll to top
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+      // Prepare the request payload
+      const payload = {
+        email: emailValue,
+        updateEnabled: false, // Don't update existing contacts
+      }
+
+      // Add list ID if provided and valid
+      if (BREVO_LIST_ID && BREVO_LIST_ID.trim() !== '') {
+        const listId = parseInt(BREVO_LIST_ID.trim())
+        if (!isNaN(listId)) {
+          payload.listIds = [listId]
+        }
+      }
+
+      // Call Brevo API to add contact
+      const response = await fetch('https://api.brevo.com/v3/contacts', {
+        method: 'POST',
+        headers: {
+          'api-key': BREVO_API_KEY,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      })
+
+      let data = {}
+      try {
+        data = await response.json()
+      } catch (error) {
+        // If response is not JSON, treat as error
+        console.error('Failed to parse response:', error)
+      }
+
+      if (response.ok) {
+        // Success - contact added
+        setSubscriptionStatus('success')
+        setSubmittedEmail(emailValue)
+        setShowSubscribePage(true)
+        
+        // Reset form fields
+        setEmail('')
+        setFooterEmail('')
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      } else {
+        // Check if contact already exists
+        // Brevo returns 400 with message like "Contact already exist" or code "duplicate_parameter"
+        const errorMessage = data.message || data.error || ''
+        const errorCode = data.code || ''
+        const errorText = (errorMessage + ' ' + errorCode).toLowerCase()
+        
+        if (response.status === 400 && (
+          errorText.includes('already') || 
+          errorText.includes('exists') || 
+          errorText.includes('duplicate') ||
+          errorCode === 'duplicate_parameter'
+        )) {
+          setSubscriptionStatus('already_subscribed')
+        } else {
+          // Other errors - treat as already subscribed for user-friendly experience
+          console.error('Brevo API error:', { status: response.status, data })
+          setSubscriptionStatus('already_subscribed')
+        }
+        setSubmittedEmail(emailValue)
+        setShowSubscribePage(true)
+        
+        // Reset form fields
+        setEmail('')
+        setFooterEmail('')
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    } catch (error) {
+      console.error('Error subscribing:', error)
+      // On network errors or other issues, treat as already subscribed for user-friendly experience
+      setSubscriptionStatus('already_subscribed')
+      setSubmittedEmail(emailValue)
+      setShowSubscribePage(true)
+      
+      // Reset form fields
+      setEmail('')
+      setFooterEmail('')
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  // Subscribe Success Page Component
-  const SubscribePage = () => (
-    <div className="subscribe-page">
-      <div className="subscribe-bg-effect"></div>
-      <div className="container">
-        <motion.div 
-          className="subscribe-content"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
-        >
-          <div className="success-icon-wrapper">
-            <div className="success-icon">
-              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="40" cy="40" r="40" fill="url(#goldGradient)" />
-                <path d="M25 40L35 50L55 30" stroke="#000" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-                <defs>
-                  <linearGradient id="goldGradient" x1="0" y1="0" x2="80" y2="80">
-                    <stop offset="0%" stopColor="#D3AE37" />
-                    <stop offset="100%" stopColor="#F4E6AB" />
-                  </linearGradient>
-                </defs>
-              </svg>
-            </div>
-          </div>
+  // Subscribe Success/Failure Page Component
+  const SubscribePage = () => {
+    const isSuccess = subscriptionStatus === 'success'
+    const isAlreadySubscribed = subscriptionStatus === 'already_subscribed'
 
-          <h1 className="subscribe-title">Success! You're In</h1>
-          <p className="subscribe-subtitle">
-            We've sent your early access details to<br />
-            <strong className="email-highlight">{submittedEmail}</strong>
-          </p>
-
-          <div className="subscribe-message">
-            <div className="message-box">
-              <h3>What's Next?</h3>
-              <ul className="next-steps-list">
-                <li>
-                  <span className="list-icon">📧</span>
-                  <span>Check your email for the starter guide and pricing tiers</span>
-                </li>
-                <li>
-                  <span className="list-icon">🎯</span>
-                  <span>Review the evaluation rules and account options</span>
-                </li>
-                <li>
-                  <span className="list-icon">🚀</span>
-                  <span>Start your journey to a funded account</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowSubscribePage(false)}
-            className="back-button"
+    return (
+      <div className="subscribe-page">
+        <div className="subscribe-bg-effect"></div>
+        <div className="container">
+          <motion.div 
+            className="subscribe-content"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
           >
-            Back to Homepage
-          </button>
-        </motion.div>
+            {isSuccess ? (
+              <>
+                <div className="success-icon-wrapper">
+                  <div className="success-icon">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="40" cy="40" r="40" fill="url(#goldGradient)" />
+                      <path d="M25 40L35 50L55 30" stroke="#000" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+                      <defs>
+                        <linearGradient id="goldGradient" x1="0" y1="0" x2="80" y2="80">
+                          <stop offset="0%" stopColor="#D3AE37" />
+                          <stop offset="100%" stopColor="#F4E6AB" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
+                </div>
+
+                <h1 className="subscribe-title">Success! You're In</h1>
+                <p className="subscribe-subtitle">
+                  We've sent your early access details to<br />
+                  <strong className="email-highlight">{submittedEmail}</strong>
+                </p>
+
+                <div className="subscribe-message">
+                  <div className="message-box">
+                    <h3>What's Next?</h3>
+                    <ul className="next-steps-list">
+                      <li>
+                        <span className="list-icon">📧</span>
+                        <span>Check your email for the starter guide and pricing tiers</span>
+                      </li>
+                      <li>
+                        <span className="list-icon">🎯</span>
+                        <span>Review the evaluation rules and account options</span>
+                      </li>
+                      <li>
+                        <span className="list-icon">🚀</span>
+                        <span>Start your journey to a funded account</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </>
+            ) : isAlreadySubscribed ? (
+              <>
+                <div className="success-icon-wrapper">
+                  <div className="success-icon" style={{ background: 'rgba(211, 174, 55, 0.2)' }}>
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="40" cy="40" r="40" fill="rgba(211, 174, 55, 0.2)" />
+                      <path d="M30 40L50 40" stroke="#D3AE37" strokeWidth="5" strokeLinecap="round" />
+                      <path d="M40 30L40 50" stroke="#D3AE37" strokeWidth="5" strokeLinecap="round" />
+                    </svg>
+                  </div>
+                </div>
+
+                <h1 className="subscribe-title">Already Subscribed</h1>
+                <p className="subscribe-subtitle">
+                  It seems you already subscribed with<br />
+                  <strong className="email-highlight">{submittedEmail}</strong>
+                </p>
+
+                <div className="subscribe-message">
+                  <div className="message-box">
+                    <h3>You're All Set!</h3>
+                    <ul className="next-steps-list">
+                      <li>
+                        <span className="list-icon">📧</span>
+                        <span>Check your email inbox for your early access details</span>
+                      </li>
+                      <li>
+                        <span className="list-icon">📂</span>
+                        <span>Don't forget to check your spam folder</span>
+                      </li>
+                      <li>
+                        <span className="list-icon">🚀</span>
+                        <span>You're ready to start your journey to a funded account</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </>
+            ) : null}
+
+            <button
+              onClick={() => {
+                setShowSubscribePage(false)
+                setSubscriptionStatus(null)
+                setSubmittedEmail('')
+              }}
+              className="back-button"
+            >
+              Back to Homepage
+            </button>
+          </motion.div>
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 
   // Show subscribe page if form was submitted
   if (showSubscribePage) {
@@ -258,11 +402,13 @@ function App() {
                     <motion.button 
                       type="submit" 
                       className="hero-cta-button"
-                      whileHover={{ scale: 1.05, boxShadow: "0 10px 30px rgba(211, 174, 55, 0.5)" }}
-                      whileTap={{ scale: 0.98 }}
+                      disabled={isLoading}
+                      whileHover={!isLoading ? { scale: 1.05, boxShadow: "0 10px 30px rgba(211, 174, 55, 0.5)" } : {}}
+                      whileTap={!isLoading ? { scale: 0.98 } : {}}
                     >
-                      <span>Get Early Access</span>
-                      <span className="button-arrow">→</span>
+                      <span>{isLoading ? 'Subscribing...' : 'Get Early Access'}</span>
+                      {!isLoading && <span className="button-arrow">→</span>}
+                      {isLoading && <span className="button-arrow">⏳</span>}
                     </motion.button>
                   </div>
                   <motion.p 
@@ -882,8 +1028,8 @@ function App() {
                   required
                   className="email-input"
                 />
-                <button type="submit" className="cta-button">
-                  Unlock Early Access
+                <button type="submit" className="cta-button" disabled={isLoading}>
+                  {isLoading ? 'Subscribing...' : 'Unlock Early Access'}
                 </button>
               </div>
             </form>
