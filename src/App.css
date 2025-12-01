@@ -945,13 +945,13 @@ p, span, a, button,
 }
 
 .badge-float:nth-child(1) {
-  top: -10%;
+  top: -20%;
   right: -5%;
   animation-delay: 0s;
 }
 
 .badge-float:nth-child(2) {
-  bottom: 10%;
+  bottom: -20%;
   left: -8%;
   animation-delay: 2s;
 }

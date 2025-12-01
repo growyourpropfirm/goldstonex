@@ -141,7 +141,7 @@ function App() {
           <div className="nav-links">
             <a href="#how-it-works">How It Works</a>
             <a href="#features">Features</a>
-            <a href="#testimonials">Testimonials</a>
+            {/* <a href="#testimonials">Testimonials</a> */}
             <a href='https://dashboard.goldstonex.com/login' target='_blank' className="nav-cta">
               <span className="text-black">START TRADING</span>
             </a>
@@ -336,8 +336,7 @@ function App() {
               </div>
               <h3 className="step-title">Get Instant Access</h3>
               <p className="step-description">
-                Sign up with your email to unlock your free evaluation starter guide,
-                pricing tiers, and early offers.
+              Sign up with your email to unlock your early access, pricing tiers, and early offers.
               </p>
             </motion.div>
 
@@ -489,7 +488,7 @@ function App() {
       </motion.section>
 
       {/* Testimonials Section */}
-      <motion.section 
+      {/* <motion.section 
         className="testimonials" 
         id="testimonials"
         initial={{ opacity: 0 }}
@@ -574,7 +573,7 @@ function App() {
             </motion.div>
           </div>
         </div>
-      </motion.section>
+      </motion.section> */}
 
       {/* Features Section */}
       <motion.section 
@@ -818,7 +817,7 @@ function App() {
               whileHover={{ x: 10, scale: 1.02 }}
             >
               <div className="step-number">Step 2</div>
-              <p>Receive your funded strategy guide & offers</p>
+              <p>Get early access to our exclusive offers</p>
             </motion.div>
             <motion.div 
               className="step-arrow-icon"
@@ -884,7 +883,7 @@ function App() {
                   className="email-input"
                 />
                 <button type="submit" className="cta-button">
-                  Unlock Early Access & Starter Pack
+                  Unlock Early Access
                 </button>
               </div>
             </form>
