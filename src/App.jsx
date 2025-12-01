@@ -158,7 +158,7 @@ function App() {
                   </div>
                 </div>
 
-                <h1 className="subscribe-title">Success! You're In</h1>
+                <h1 className="subscribe-title">You're In! Check your inbox!</h1>
                 <p className="subscribe-subtitle">
                   We've sent your early access details to<br />
                   <strong className="email-highlight">{submittedEmail}</strong>
