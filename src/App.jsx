@@ -7,7 +7,7 @@ function App() {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [footerEmail, setFooterEmail] = useState('')
-  const [isBannerVisible, setIsBannerVisible] = useState(true)
+  // const [isBannerVisible, setIsBannerVisible] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const { scrollY } = useScroll()
 
@@ -157,7 +157,7 @@ function App() {
       {/* Parallax Background */}
       <ParallaxBackground />
 
-      {isBannerVisible && (
+      {/* {isBannerVisible && (
   <motion.div
     className="top-banner hero-form-container"
     initial={{ y: -50, opacity: 0 }}
@@ -168,17 +168,9 @@ function App() {
       <span className="banner-content">
         Get 30% OFF all Instant Funding Challenges
       </span>
-      {/* <motion.button
-        className="banner-close"
-        onClick={() => setIsBannerVisible(false)}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-      >
-        ✕
-      </motion.button> */}
     </div>
   </motion.div>
-)}
+)} */}
 
       {/* Navigation */}
       <motion.nav
