@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import './App.css'
 
@@ -172,7 +172,8 @@ function App() {
           <div className="nav-links">
             <a href="#how-it-works">How It Works</a>
             <a href="#features">Features</a>
-            <a href="/instant-funding">Instant Funding</a>
+            {/* <a href="/instant-funding">Instant Funding</a> */}
+            <Link to="/instant-funding">Instant Funding</Link>
             {/* <a href="#testimonials">Testimonials</a> */}
             <a href='https://dashboard.goldstonex.com/login' target='_blank' className="nav-cta">
               <span className="text-black">START TRADING</span>
