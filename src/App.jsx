@@ -172,6 +172,7 @@ function App() {
           <div className="nav-links">
             <a href="#how-it-works">How It Works</a>
             <a href="#features">Features</a>
+            <a href="/instant-funding">Instant Funding</a>
             {/* <a href="#testimonials">Testimonials</a> */}
             <a href='https://dashboard.goldstonex.com/login' target='_blank' className="nav-cta">
               <span className="text-black">START TRADING</span>
