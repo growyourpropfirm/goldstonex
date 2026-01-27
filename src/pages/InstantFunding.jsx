@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import '../App.css'
+import TopSiteBanner from '../components/TopSiteBanner'
 
 function InstantFunding() {
   const [isStickyVisible, setIsStickyVisible] = useState(false)
@@ -98,6 +99,7 @@ function InstantFunding() {
   return (
     <div className="app">
       {/* Parallax Background */}
+      <TopSiteBanner />
       <ParallaxBackground />
 
       {/* Navigation */}
