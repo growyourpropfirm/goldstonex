@@ -111,7 +111,8 @@ function InstantFunding() {
       >
         <div className="container">
           <div className="nav-brand">
-            <img src="/GoldStoneX_Logo.svg" alt="GoldStoneX Logo" className="nav-logo" />
+          
+          <a href='/'><img src="/GoldStoneX_Logo.svg" alt="GoldStoneX Logo" className="nav-logo" /></a>
           </div>
           <div className="nav-links">
             <a href="#how-it-works">How It Works</a>
@@ -711,16 +712,43 @@ function InstantFunding() {
           <div className="footer-content">
             <div className="footer-brand">
               <img src="/GoldStoneX_Logo_yellow.svg" alt="GoldStoneX Logo" className="nav-logo" />
-              <p>Instant Funding. No Evaluation. Trade Up to $200k Today.</p>
+              <p>Trade Without Pressure. Grow Without Limits.</p>
             </div>
 
             <div className="footer-disclaimer">
               <h4>Disclaimer</h4>
               <p>
-                GoldStoneX provides instant funding accounts for qualified traders. All trading involves risk,
-                and past performance is not indicative of future results. Please trade responsibly.
+                GoldStoneX provides simulated accounts for trader evaluation and educational purposes only.
+                No real capital is traded during evaluation. Participation does not involve real-money investment,
+                and past results are not indicative of future performance. GoldStoneX is not a broker, financial
+                advisor, or investment service provider.
               </p>
             </div>
+          </div>
+
+          <div className="footer-links">
+            <ul className="footer-link-list">
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/privacy-policy/">
+                  <span className="footer-link-text">Privacy Policy</span>
+                </a>
+              </li>
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/terms-conditions/">
+                  <span className="footer-link-text">Terms &amp; Conditions</span>
+                </a>
+              </li>
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/terms-of-use/">
+                  <span className="footer-link-text">Terms of Use</span>
+                </a>
+              </li>
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/faq/">
+                  <span className="footer-link-text">FAQ</span>
+                </a>
+              </li>
+            </ul>
           </div>
 
           <div className="footer-bottom">

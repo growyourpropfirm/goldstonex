@@ -167,7 +167,7 @@ function App() {
         <div className="container">
           <div className="nav-brand">
             {/* <span className="brand-text">GoldStoneX</span> */}
-            <img src="/GoldStoneX_Logo.svg" alt="GoldStoneX Logo" className="nav-logo" />
+            <a href='/'><img src="/GoldStoneX_Logo.svg" alt="GoldStoneX Logo" className="nav-logo" /></a>
           </div>
           <div className="nav-links">
             <a href="#how-it-works">How It Works</a>
@@ -952,6 +952,31 @@ function App() {
                 advisor, or investment service provider.
               </p>
             </div>
+          </div>
+
+          <div className="footer-links">
+            <ul className="footer-link-list">
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/privacy-policy/">
+                  <span className="footer-link-text">Privacy Policy</span>
+                </a>
+              </li>
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/terms-conditions/">
+                  <span className="footer-link-text">Terms &amp; Conditions</span>
+                </a>
+              </li>
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/terms-of-use/">
+                  <span className="footer-link-text">Terms of Use</span>
+                </a>
+              </li>
+              <li className="footer-link-item">
+                <a target='_blank' href="https://goldstonex.com/faq/">
+                  <span className="footer-link-text">FAQ</span>
+                </a>
+              </li>
+            </ul>
           </div>
 
           <div className="footer-bottom">
