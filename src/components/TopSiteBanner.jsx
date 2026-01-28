@@ -3,17 +3,22 @@ import "./TopSiteBanner.css";
 
 export default function TopSiteBanner() {
   useEffect(() => {
+    const banner = document.querySelector(".top-site-banner");
     const header =
       document.querySelector(".elementor-location-header") ||
       document.querySelector("header");
 
-    const banner = document.querySelector(".top-site-banner");
+    const updateOffset = () => {
+      if (banner && header) {
+        header.style.marginTop = `${banner.offsetHeight}px`;
+      }
+    };
 
-    if (header && banner) {
-      header.style.marginTop = `${banner.offsetHeight}px`;
-    }
+    updateOffset();
+    window.addEventListener("resize", updateOffset);
 
     return () => {
+      window.removeEventListener("resize", updateOffset);
       if (header) header.style.marginTop = "";
     };
   }, []);
@@ -21,8 +26,8 @@ export default function TopSiteBanner() {
   return (
     <div className="top-site-banner">
       <span>
-        <span className="special">Use Code: Instant30</span>
         <span className="deal-tag">Special Deal</span>
+        <span className="special">Use Code: Instant30</span>
         <span>Get 30% OFF all Instant Funding Challenges</span>
       </span>
     </div>

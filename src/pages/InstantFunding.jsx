@@ -412,11 +412,11 @@ function InstantFunding() {
 
           <div className="pricing-grid">
             {[
-              { size: '$10,000', fee: '$99', split: '90%', maxLoss: '10%', dailyLoss: '5%' },
-              { size: '$25,000', fee: '$199', split: '90%', maxLoss: '10%', dailyLoss: '5%' },
-              { size: '$50,000', fee: '$399', split: '90%', maxLoss: '10%', dailyLoss: '5%' },
-              { size: '$100,000', fee: '$699', split: '90%', maxLoss: '10%', dailyLoss: '5%' },
-              { size: '$200,000', fee: '$1,299', split: '90%', maxLoss: '10%', dailyLoss: '5%' }
+              { size: '$5,000', fee: '$79.90', split: '80/20', maxLoss: '5%', dailyLoss: '3%' },
+              { size: '$10,000', fee: '$119.90', split: '80/20', maxLoss: '5%', dailyLoss: '3%' },
+              { size: '$25,000', fee: '$239.90', split: '80/20', maxLoss: '5%', dailyLoss: '3%' },
+              // { size: '$100,000', fee: '$699', split: '90%', maxLoss: '10%', dailyLoss: '5%' },
+              // { size: '$200,000', fee: '$1,299', split: '90%', maxLoss: '10%', dailyLoss: '5%' }
             ].map((plan, index) => (
               <motion.div
                 key={index}

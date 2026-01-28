@@ -15,22 +15,30 @@
   justify-content: center;
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 10000;
   font-family: "din-condensed", sans-serif;
   letter-spacing: 0.5px;
   box-sizing: border-box;
+  overflow-x: hidden; /* prevents mobile clipping */
+  transform: translateZ(0);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
+/* Content wrapper */
 .top-site-banner span {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
-  justify-content: center;
+  max-width: 100%;
   text-align: center;
   font-weight: 700;
 }
 
+/* PROMO CODE – MUST ALWAYS BE VISIBLE */
 .top-site-banner .special {
   background: rgba(0, 0, 0, 0.35);
   border: 1px solid rgba(255, 255, 255, 0.35);
@@ -39,17 +47,27 @@
   font-weight: 700;
   letter-spacing: 0.8px;
   white-space: nowrap;
+  flex-shrink: 0; /* 🔑 prevents shrinking */
+  order: -1; /* 🔑 always first */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 .top-site-banner .deal-tag {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(244, 230, 171, 0.6);
+  padding: 3px 10px;
+  border-radius: 999px;
   color: #F4E6AB;
   font-weight: 600;
   text-transform: uppercase;
   white-space: nowrap;
+  flex-shrink: 0;
+  animation: heartbeat 1.8s ease-in-out infinite;
 }
+
 
 /* Tablet */
 @media (max-width: 1024px) {
@@ -71,14 +89,41 @@
   }
 
   .top-site-banner .special {
-    padding: 3px 8px;
+    padding: 4px 10px;
     font-size: 15px;
   }
 }
 
-/* Small mobile */
+/* Small mobile (iPhone SE / old Android) */
 @media (max-width: 480px) {
   .top-site-banner {
     font-size: 15px;
   }
+
+  .top-site-banner span {
+    row-gap: 4px;
+  }
 }
+
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.12);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.08);
+  }
+  70% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
