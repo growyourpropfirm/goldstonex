@@ -28,7 +28,7 @@ export default function TopSiteBanner() {
       <span>
         <span className="deal-tag">Special Deal</span>
         <span className="special">Use Code: Instant30</span>
-        <span>Get 30% OFF all Instant Funding Challenges</span>
+        <span className="text-black">Get 30% OFF all Instant Funding Challenges</span>
       </span>
     </div>
   );
