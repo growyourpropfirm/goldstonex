@@ -260,7 +260,7 @@ function InstantFunding() {
             >
               <div className="trustpilot-rating">
                 <span className="stars-large">⭐⭐⭐⭐⭐</span>
-                <span className="rating-text">4.8/5 on Trustpilot</span>
+                <span className="rating-text">5/5 on Trustpilot</span>
               </div>
             </motion.div>
 
